@@ -30,11 +30,12 @@ func (app *Config) routes() http.Handler {
 	mux.Delete("/sales/{id}", controller.DeleteSale)
 
 	// Priority routes
-	mux.Get("/priority/{sale_id}", controller.GetPriorityList)
-	// mux.Get("/sales", app.Models.Sale.GetOne())
-	// mux.Get("/sales", app.Models.Sale.Update())
-	// mux.Get("/sales", app.Models.Sale.DeleteByID())
-	// mux.Post("/authenticate", app.Authenticate)
+	mux.Get("/priority/list/{sale_id}", controller.GetPriorityList)
+	// mux.Post("/priority/list", controller.InsertPriorityList)
+
+	// Breeder routes
+	mux.Post("/breeder", controller.InsertBreeder)
+	mux.Get("/breeder/{email}", controller.GetBreederByEmail)
 
 	return mux
 }
