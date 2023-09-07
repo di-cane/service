@@ -1,6 +1,11 @@
 package data
 
-import "context"
+import (
+	"context"
+	"log"
+
+	"github.com/lib/pq"
+)
 
 type Breeder struct {
 	Breeder_id  string `json:"breeder_id"`
@@ -37,7 +42,7 @@ func (b *Breeder) GetByEmail(email string) (*Breeder, error) {
 	return &breeder, nil
 }
 
-// Insert inserts a new sale into the database, and returns the ID of the newly inserted row
+// Insert inserts a new breeder into the database, and returns the ID of the newly inserted row
 func (b *Breeder) Insert(breeder Breeder) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
@@ -64,4 +69,60 @@ func (b *Breeder) Insert(breeder Breeder) (string, error) {
 	}
 
 	return newID, nil
+}
+
+// GetAll returns a slice of all users, sorted by last name
+func (b *Breeder) GetBreederSales(id string) ([]*Sale, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	query := "SELECT * FROM sales WHERE breeder_id = $1"
+
+	rows, err := db.QueryContext(ctx, query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var sales []*Sale
+
+	for rows.Next() {
+		var sale Sale
+		err := rows.Scan(
+			&sale.Sale_id,
+			&sale.Father_id,
+			&sale.Mother_id,
+			&sale.Is_litter,
+			&sale.Litter_expected_birth_date,
+			&sale.Litter_expected_amount,
+			&sale.Litter_confirmed_amount,
+			&sale.Shipping_age,
+			&sale.Birth_date,
+			&sale.Breed,
+			&sale.Shipping,
+			pq.Array(&sale.Vaccines),
+			&sale.Microchip,
+			&sale.Pedigree,
+			&sale.Weight,
+			&sale.Height,
+			&sale.Color,
+			&sale.Gender,
+			pq.Array(&sale.Traits),
+			&sale.Adult_max_height,
+			&sale.Adult_max_weight,
+			&sale.Adult_min_height,
+			&sale.Adult_min_weight,
+			pq.Array(&sale.Images),
+			&sale.Price,
+			&sale.Breeder_id,
+		)
+		if err != nil {
+			log.Println("Error scanning", err)
+			return nil, err
+		}
+
+		sales = append(sales, &sale)
+	}
+
+	return sales, nil
 }

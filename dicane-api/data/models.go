@@ -53,6 +53,7 @@ type Sale struct {
 	Adult_min_weight           float64        `json:"adult_min_weight"`
 	Images                     []string       `json:"images"`
 	Price                      float64        `json:"price"`
+	Breeder_id                 string         `json:"breeder_id"`
 }
 
 // GetAll returns a slice of all users, sorted by last name
@@ -98,6 +99,7 @@ func (s *Sale) GetAll() ([]*Sale, error) {
 			&sale.Adult_min_weight,
 			pq.Array(&sale.Images),
 			&sale.Price,
+			&sale.Breeder_id,
 		)
 		if err != nil {
 			log.Println("Error scanning", err)
@@ -146,6 +148,7 @@ func (s *Sale) GetOne(id string) (*Sale, error) {
 		&sale.Adult_min_weight,
 		pq.Array(&sale.Images),
 		&sale.Price,
+		&sale.Breeder_id,
 	)
 
 	if err != nil {

@@ -36,6 +36,7 @@ func (app *Config) routes() http.Handler {
 	// Breeder routes
 	mux.Post("/breeder", controller.InsertBreeder)
 	mux.Get("/breeder/{email}", controller.GetBreederByEmail)
+	mux.Get("/breeder/{id}/sales", controller.GetBreederSales)
 
 	return mux
 }

@@ -11,6 +11,16 @@ import (
 
 var breeder data.Breeder
 
+func GetBreederSales(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	sales, err := breeder.GetBreederSales(id)
+	if err != nil {
+		helpers.MessageLogs.ErrorLog.Println(err)
+		return
+	}
+	helpers.WriteJSON(w, http.StatusOK, sales)
+}
+
 func GetBreederByEmail(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "email")
 	breeder, err := breeder.GetByEmail(id)
