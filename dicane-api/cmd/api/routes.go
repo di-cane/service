@@ -31,6 +31,7 @@ func (app *Config) routes() http.Handler {
 
 	// Priority routes
 	mux.Get("/priority/list/{sale_id}", controller.GetPriorityList)
+	mux.Post("/priority/list", controller.InsertPriorityList)
 	// mux.Post("/priority/list", controller.InsertPriorityList)
 
 	// Breeder routes

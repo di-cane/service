@@ -47,3 +47,26 @@ func (p *Priority) GetPriorityList(saleId string) ([]*Priority, error) {
 	}
 	return priorities, nil
 }
+
+func (p *Priority) InsertPriorityList(priorities []Priority) ([]Priority, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	query := "INSERT INTO priority (sale_id, customer_id, position, price, is_available) VALUES ($1, $2, $3, $4, $5) RETURNING *"
+
+	for _, priority := range priorities {
+		err := db.QueryRowContext(ctx, query, priority.Sale_id, priority.Customer_id, priority.Position, priority.Price, priority.Is_available).Scan(
+			&priority.Priority_id,
+			&priority.Sale_id,
+			&priority.Customer_id,
+			&priority.Position,
+			&priority.Price,
+			&priority.Is_available,
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return priorities, nil
+}

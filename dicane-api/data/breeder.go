@@ -96,7 +96,7 @@ func (b *Breeder) GetBreederSales(id string) ([]*Sale, error) {
 			&sale.Litter_expected_birth_date,
 			&sale.Litter_expected_amount,
 			&sale.Litter_confirmed_amount,
-			&sale.Shipping_age,
+			&sale.Shipping_date,
 			&sale.Birth_date,
 			&sale.Breed,
 			&sale.Shipping,

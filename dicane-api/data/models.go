@@ -35,7 +35,7 @@ type Sale struct {
 	Litter_expected_birth_date time.Time      `json:"litter_expected_birth_date"`
 	Litter_expected_amount     int            `json:"litter_expected_amount"`
 	Litter_confirmed_amount    int            `json:"litter_confirmed_amount"`
-	Shipping_age               int            `json:"shipping_age"`
+	Shipping_date              time.Time      `json:"shipping_date"`
 	Birth_date                 time.Time      `json:"birth_date"`
 	Breed                      string         `json:"breed"`
 	Shipping                   string         `json:"shipping"`
@@ -81,7 +81,7 @@ func (s *Sale) GetAll() ([]*Sale, error) {
 			&sale.Litter_expected_birth_date,
 			&sale.Litter_expected_amount,
 			&sale.Litter_confirmed_amount,
-			&sale.Shipping_age,
+			&sale.Shipping_date,
 			&sale.Birth_date,
 			&sale.Breed,
 			&sale.Shipping,
@@ -130,7 +130,7 @@ func (s *Sale) GetOne(id string) (*Sale, error) {
 		&sale.Litter_expected_birth_date,
 		&sale.Litter_expected_amount,
 		&sale.Litter_confirmed_amount,
-		&sale.Shipping_age,
+		&sale.Shipping_date,
 		&sale.Birth_date,
 		&sale.Breed,
 		&sale.Shipping,
@@ -169,7 +169,7 @@ func (s *Sale) Update(id string, body Sale) (*Sale, error) {
 		" litter_expected_birth_date = $2," +
 		" litter_expected_amount = $3," +
 		" litter_confirmed_amount = $4," +
-		" shipping_age = $5," +
+		" shipping_date = $5," +
 		" birth_date = $6," +
 		" breed = $7," +
 		" shipping = $8," +
@@ -194,7 +194,7 @@ func (s *Sale) Update(id string, body Sale) (*Sale, error) {
 		body.Litter_expected_birth_date,
 		body.Litter_expected_amount,
 		body.Litter_confirmed_amount,
-		body.Shipping_age,
+		body.Shipping_date,
 		body.Birth_date,
 		body.Breed,
 		body.Shipping,
@@ -262,7 +262,7 @@ func (s *Sale) Insert(sale Sale) (string, error) {
 		" litter_expected_birth_date," +
 		" litter_expected_amount," +
 		" litter_confirmed_amount," +
-		" shipping_age," +
+		" shipping_date," +
 		" birth_date," +
 		" breed," +
 		" shipping," +
@@ -279,8 +279,9 @@ func (s *Sale) Insert(sale Sale) (string, error) {
 		" adult_min_height," +
 		" adult_min_weight," +
 		" images," +
-		" price )" +
-		" VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)" +
+		" price," +
+		" breeder_id )" +
+		" VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)" +
 		" RETURNING sale_id"
 
 	var newID string
@@ -289,7 +290,7 @@ func (s *Sale) Insert(sale Sale) (string, error) {
 		sale.Litter_expected_birth_date,
 		sale.Litter_expected_amount,
 		sale.Litter_confirmed_amount,
-		sale.Shipping_age,
+		sale.Shipping_date,
 		sale.Birth_date,
 		sale.Breed,
 		sale.Shipping,
@@ -306,7 +307,8 @@ func (s *Sale) Insert(sale Sale) (string, error) {
 		sale.Adult_min_height,
 		sale.Adult_min_weight,
 		pq.Array(sale.Images),
-		sale.Price).Scan(&newID)
+		sale.Price,
+		sale.Breeder_id).Scan(&newID)
 
 	if err != nil {
 		return "", err
